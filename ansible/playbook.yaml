@@ -1,0 +1,173 @@
+- name: DevOps Demo Connectware
+  hosts: localhost
+  
+  tasks:
+
+    - name: Install Services (S7)
+      loop:
+        - host: dev01
+          location: Hamburg
+          hall: Hall 1
+          line: Line 1
+        - host: dev02
+          location: Hamburg
+          hall: Hall 1
+          line: Line 2
+        - host: dev03
+          location: Hamburg
+          hall: Hall 1
+          line: Line 3
+        - host: dev04
+          location: Hamburg
+          hall: Hall 2
+          line: Line 1
+        - host: dev05
+          location: Hamburg
+          hall: Hall 2
+          line: Line 2
+        - host: dev06
+          location: Hamburg
+          hall: Hall 2
+          line: Line 3
+        - host: dev07
+          location: Hamburg
+          hall: Hall 3
+          line: Line 1
+        - host: dev08
+          location: Hamburg
+          hall: Hall 3
+          line: Line 2
+        - host: dev09
+          location: Berlin
+          hall: Hall 1
+          line: Line 1
+        - host: dev10
+          location: Berlin
+          hall: Hall 1
+          line: Line 2
+      loop_control:
+        loop_var: s7
+      cybus.connectware.service:
+        admin_password: "admin"
+        id: "{{ s7.host }}_S7"
+        commissioning_file: ../services/s7.yaml
+        parameters:
+          ipAddress: "{{ s7.host }}"
+          port: 102
+          location: "{{ s7.location }}"
+          hall: "{{ s7.hall }}"
+          line: "{{ s7.line }}"
+
+    - name: Install Services (Modbus)
+      loop:
+        - host: dev11
+          location: Hamburg
+          hall: Hall 1
+          line: Line 1
+        - host: dev12
+          location: Hamburg
+          hall: Hall 1
+          line: Line 2
+        - host: dev13
+          location: Hamburg
+          hall: Hall 1
+          line: Line 3
+        - host: dev14
+          location: Hamburg
+          hall: Hall 2
+          line: Line 1
+        - host: dev15
+          location: Hamburg
+          hall: Hall 2
+          line: Line 2
+        - host: dev16
+          location: Hamburg
+          hall: Hall 2
+          line: Line 3
+        - host: dev17
+          location: Hamburg
+          hall: Hall 3
+          line: Line 1
+        - host: dev18
+          location: Hamburg
+          hall: Hall 3
+          line: Line 2
+        - host: dev19
+          location: Berlin
+          hall: Hall 1
+          line: Line 1
+        - host: dev20
+          location: Berlin
+          hall: Hall 1
+          line: Line 2
+      loop_control:
+        loop_var: modbus
+      cybus.connectware.service:
+        admin_password: "admin"
+        id: "{{ modbus.host }}_Modbus"
+        commissioning_file: ../services/modbus.yaml
+        parameters:
+          ipAddress: "{{ modbus.host }}"
+          port: 5502
+          location: "{{ modbus.location }}"
+          hall: "{{ modbus.hall }}"
+          line: "{{ modbus.line }}"
+
+    - name: Install Services (OPC UA)
+      loop:
+        - host: dev21
+          location: Hamburg
+          hall: Hall 1
+          line: Line 1
+        - host: dev22
+          location: Hamburg
+          hall: Hall 2
+          line: Line 1
+        - host: dev23
+          location: Hamburg
+          hall: Hall 3
+          line: Line 1
+        - host: dev24
+          location: Berlin
+          hall: Hall 2
+          line: Line 1
+        - host: dev25
+          location: Berlin
+          hall: Hall 2
+          line: Line 2
+      loop_control:
+        loop_var: opcua
+      cybus.connectware.service:
+        admin_password: "admin"
+        id: "{{ opcua.host }}_Opcua"
+        commissioning_file: ../services/opcua.yaml
+        parameters:
+          opcuaHost: "{{ opcua.host }}"
+          opcuaPort: 4840
+          location: "{{ opcua.location }}"
+          hall: "{{ opcua.hall }}"
+          line: "{{ opcua.line }}"
+
+    - name: Install SAP Connector Service
+      cybus.connectware.service:
+        admin_password: "admin"
+        id: "demo_sapconnector"
+        commissioning_file: ../services/sap.yaml
+
+    - name: Install MES Connector Service
+      cybus.connectware.service:
+        admin_password: "admin"
+        id: "demo_mesconnector"
+        commissioning_file: ../services/mes.yaml
+
+    - name: Install Data Mapping Service
+      cybus.connectware.service:
+        admin_password: "admin"
+        id: "demo_datamapping"
+        commissioning_file: ../services/data-aggregation.yaml
+
+    - name: Install MES Webinterface Service
+      cybus.connectware.service:
+        admin_password: "admin"
+        id: "demo_meswebinterface"
+        commissioning_file: ../services/mes-webinterface.yaml

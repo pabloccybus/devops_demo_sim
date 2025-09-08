@@ -1,0 +1,66 @@
+---
+# ----------------------------------------------------------------------------#
+# Commissioning File
+# ----------------------------------------------------------------------------#
+# Copyright: Cybus GmbH (2020)
+# Contact: support@cybus.io
+# ----------------------------------------------------------------------------#
+# Source Interface Definition - HTTP/REST endpoint
+# ----------------------------------------------------------------------------#
+
+description: >
+  Sample commissioning file for communicating with HTTP/REST endpoint
+
+metadata:
+  name: S7 PLC REST API Target
+  icon: https://www.cybus.io/wp-content/uploads/2017/10/for-whom1.svg
+  provider: cybus
+  homepage: https://www.cybus.io
+  version: 0.0.1
+
+definitions:
+
+  # API host Connection data
+  httpHost: 66cdfa358ca9aa6c8ccc6fd2.mockapi.io
+
+  httpPort: 443
+
+
+parameters:
+
+  # API endpoint to send data
+  endpointAPI:
+    type: string
+    default: 'api/data/machineData'
+
+resources:
+
+  httpConnection:
+    type: Cybus::Connection
+    properties:
+      protocol: Http
+      connection:
+        scheme: https
+        host: !ref httpHost
+        port: !ref httpPort
+        headers: {
+          Content-Type: application/json
+        }
+
+  pushDataToAPI:
+    type: Cybus::Endpoint
+    properties:
+      protocol: Http
+      connection: !ref httpConnection
+      write:
+        path: !ref endpointAPI
+        interval: 5000
+        
+  mapping:
+    type: Cybus::Mapping
+    properties:
+      mappings:
+        - subscribe:
+            topic: 'Hamburg/Hall 1/Line 1/Cleaning/transformed/human-timestamp/temperature'
+          publish:
+            endpoint: !ref pushDataToAPI

@@ -1,0 +1,59 @@
+description: !sub "OPC UA Server - ${opcuaHost}"
+
+metadata:
+
+  name: !sub "OPC UA Server - ${opcuaHost}"
+
+parameters:
+
+  opcuaHost:
+    type: string
+    description: OPC UA Host Address
+    default: "HOST"
+
+  opcuaPort:
+    type: integer
+    description: OPC UA Host Port
+    default: 12345
+
+  location:
+    type: string
+    default: Hamburg
+
+  hall:
+    type: string
+    default: Hall 1
+
+  line:
+    type: string
+    default: Line 1
+  
+  opc_nodeId:
+    type: string
+  
+  topicName:
+    type: string
+
+
+definitions:
+  department: Assembling
+  CYBUS_MQTT_ROOT: !sub '${location}/${hall}/${line}/${department}'
+
+resources:
+
+  opcuaConnection:
+    type: Cybus::Connection
+    properties:
+      protocol: Opcua
+      connection:
+        host: !ref opcuaHost
+        port: !ref opcuaPort
+
+  RoboArmManipulatorEndpoint:
+    type: Cybus::Endpoint
+    properties:
+      protocol: Opcua
+      connection: !ref opcuaConnection
+      topic: !sub 'RoboAssembler_5000/RoboArm_Manipulator/${topicName}'
+      subscribe:
+        nodeId: !ref opc_nodeId

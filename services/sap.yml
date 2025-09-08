@@ -1,0 +1,23 @@
+---
+description: SAP Connection
+
+metadata:
+  name: SAP Connection
+
+resources:
+  httpConnection:
+    type: Cybus::Connection
+    properties:
+      protocol: Http
+      connection:
+        scheme: http
+        host: sap
+        port: 8080
+
+  tolerances:
+    type: Cybus::Endpoint
+    properties:
+      protocol: Http
+      connection: !ref httpConnection
+      read:
+        path: tolerance

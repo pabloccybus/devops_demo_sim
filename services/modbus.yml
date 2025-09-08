@@ -1,0 +1,62 @@
+description: !sub "Modbus PLC - ${ipAddress}"
+
+metadata:
+  name: !sub "Modbus PLC - ${ipAddress}"
+  version: 1.0.0
+  provider: cybus
+  homepage: https://www.cybus.io
+  icon: https://bit.ly/3CsZpk0
+
+parameters:
+  ipAddress:
+    type: string
+
+  port:
+    type: number
+    default: 5502
+
+  location:
+    type: string
+
+  hall:
+    type: string
+
+  line:
+    type: string
+
+definitions:
+  department: CNC
+  CYBUS_MQTT_ROOT: !sub '${location}/${hall}/${line}/${department}'
+
+resources:
+  modbusConnection:
+    type: Cybus::Connection
+    properties:
+      protocol: Modbus
+      connection:
+        host: !ref ipAddress
+        port: !ref port
+
+  rpm:
+    type: Cybus::Endpoint
+    properties:
+      protocol: Modbus
+      connection: !ref modbusConnection
+      topic: rpm
+      subscribe:
+        fc: 3
+        length: 2
+        address: 5
+        dataType: floatBE
+
+  current:
+    type: Cybus::Endpoint
+    properties:
+      protocol: Modbus
+      connection: !ref modbusConnection
+      topic: current
+      subscribe:
+        fc: 3
+        length: 2
+        address: 7
+        dataType: floatBE

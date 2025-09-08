@@ -1,0 +1,23 @@
+---
+description: MES Webinterface
+
+metadata:
+  name: MES Webinterface
+
+resources:
+  myIngressRoute:
+    type: Cybus::IngressRoute
+    properties:
+      container: simulators-mes-web-1
+      type: http
+      slug: interface
+      target:
+        path: /
+        port: 3000
+
+  myLink:
+    type: Cybus::Link
+    properties:
+      name: Interface
+      href: ""
+      ingressRoute: !ref myIngressRoute

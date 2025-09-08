@@ -1,0 +1,60 @@
+description: !sub "S7 PLC - ${ipAddress}"
+
+metadata:
+  name: !sub "S7 PLC - ${ipAddress}"
+  version: 1.0.0
+  provider: cybus
+  homepage: https://www.cybus.io
+  icon: https://bit.ly/3LY1KGJ
+
+parameters:
+  ipAddress:
+    type: string
+    default: dev01
+
+  port:
+    type: number
+    default: 102
+
+  location:
+    type: string
+    default: Hamburg
+
+  hall:
+    type: string
+    default: Hall 1
+
+  line:
+    type: string
+    default: Line 1
+
+definitions:
+  department: Cleaning
+  CYBUS_MQTT_ROOT: !sub '${location}/${hall}/${line}/${department}'
+
+resources:
+  s7Connection:
+    type: Cybus::Connection
+    properties:
+      protocol: S7
+      connection:
+        host: !ref ipAddress
+        port: !ref port
+
+  temperature:
+    type: Cybus::Endpoint
+    properties:
+      protocol: S7
+      connection: !ref s7Connection
+      topic: temperature
+      subscribe:
+        address: DB1,REAL2
+
+  pressure:
+    type: Cybus::Endpoint
+    properties:
+      protocol: S7
+      connection: !ref s7Connection
+      topic: pressure
+      subscribe:
+        address: DB1,REAL6

@@ -1,0 +1,53 @@
+---
+metadata:
+  name: Data Transformation
+
+description: Takes REAL values coming from a Siemens PLC and converts to 2 decimal point FLOAT and ISO 8601 date format
+
+resources:
+
+  floatConversionMapping:
+    type: Cybus::Mapping
+    properties:
+      mappings:
+        - subscribe:
+            - topic: 'Hamburg/Hall 1/Line 1/Cleaning/+value'
+          publish:
+            topic: 'Hamburg/Hall 1/Line 1/Cleaning/transformed/$value'
+          rules:
+            # save the original payload
+            - stash:
+                label: initial
+            # isolate the value number
+            - transform:
+                expression: $.value
+            # convert it to number (float)
+            - transform:
+                expression: $number($)
+            # round to 2 decimal points after the comma
+            - transform:
+                expression: $round($, 2)
+            # regenerate the payload with the original timestamp and the new value number
+            - transform:
+                expression: |
+                  {
+                    "timestamp":  $last("initial").timestamp,
+                    "value": $
+                  }
+
+  convertTimestampMapping:
+    type: Cybus::Mapping
+    properties:
+      mappings:
+        - subscribe:
+            - topic: 'Hamburg/Hall 1/Line 1/Cleaning/transformed/+value'
+          publish:
+            topic: 'Hamburg/Hall 1/Line 1/Cleaning/transformed/human-timestamp/$value'
+          rules:
+            # transform the timestamp to ISO 8601 date format from Unix epoch
+            - transform:
+                expression: |
+                  {
+                  "timestamp": $fromMillis($.timestamp),
+                  "value": $.value
+                  }

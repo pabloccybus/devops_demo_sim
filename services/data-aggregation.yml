@@ -1,0 +1,61 @@
+---
+metadata:
+  name: Data Aggregation
+
+description: Data Logic for Aggregation
+
+resources:
+
+  mes2sap:
+    type: Cybus::Mapping
+    properties:
+      mappings:
+        - subscribe:
+            - topic: services/demo_mesconnector/order
+          rules:
+            - transform:
+                expression: |
+                  {
+                    "timestamp": timestamp,
+                    "key": value[0].key,
+                    "value": value[0].number
+                  }
+            - cov:
+                key: key
+          publish:
+            topic: services/demo_sapconnector/tolerances/tolerance/req
+
+  combined:
+    type: Cybus::Mapping
+    properties:
+      mappings:
+        - subscribe:
+            - topic: services/demo_sapconnector/tolerances/tolerance/res
+              label: tolerances
+            - topic: services/demo_mesconnector/order
+              label: order
+            - endpoint: dev01_S7-temperature
+              label: dev01_S7-temperature
+          rules:
+            - collect: {}
+            - transform:
+                expression: |
+                  {
+                    "timestamp": "dev01_S7-temperature".timestamp,
+                    "value": "dev01_S7-temperature".value,
+                    "order": order.value[0].number,
+                    "machineId": "dev01_S7",
+                    "tolerances": {
+                      "min": "tolerances".value.min,
+                      "max": "tolerances".value.max
+                      },
+                    "context": {
+                      "plant": "Hamburg",
+                      "hall": "Hall 1",
+                      "line": "Line 1",
+                      "department": "Cleaning"
+                      }
+                  }
+
+          publish:
+            topic: services/datalogic/out

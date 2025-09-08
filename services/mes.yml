@@ -1,0 +1,27 @@
+---
+description: MES Connection
+
+metadata:
+  name: MES Connection
+
+resources:
+  mssqlConnection:
+    type: Cybus::Connection
+    properties:
+      protocol: Sql
+      connection:
+        url: "mariadb://root:cybus@mes:3306/cybus"
+
+  mssqlQueryAllWorkingPlaces:
+    type: Cybus::Endpoint
+    properties:
+      topic: order
+      protocol: Mssql
+      connection: !ref mssqlConnection
+      subscribe:
+        interval: 1000
+        query: |
+          SELECT *
+          FROM `order`
+          ORDER BY `key` DESC
+          LIMIT 1
