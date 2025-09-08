@@ -1,0 +1,113 @@
+description: >
+
+  OPC UA Python Example Service
+  Cybus Knowledge Base - How to connect an OPC UA server
+
+metadata:
+
+  name: OPC UA Docker Server
+
+parameters:
+
+  opcuaHost:
+    type: string
+    description: OPC UA Host Address
+    default: "HOST"
+
+  opcuaPort:
+    type: integer
+    description: OPC UA Host Port
+    default: 12345
+
+resources:
+
+  opcuaConnection:
+    type: Cybus::Connection
+    properties:
+      protocol: Opcua
+      connection:
+        host: !ref opcuaHost
+        port: !ref opcuaPort
+
+  RoboArmManipulatorPosition:
+    type: Cybus::Endpoint
+    properties:
+      protocol: Opcua
+      connection: !ref opcuaConnection
+      topic: Building_1/RoboAssembler_5000/RoboArm_Manipulator/Position
+      subscribe:
+        nodeId: 'ns=2;i=11'
+
+  RoboArmManipulatorTemperature:
+    type: Cybus::Endpoint
+    properties:
+      protocol: Opcua
+      connection: !ref opcuaConnection
+      topic: Building_1/RoboAssembler_5000/RoboArm_Manipulator/Temperature
+      subscribe:
+        nodeId: 'ns=2;i=9'
+
+  RoboArmManipulatorTimestamp:
+    type: Cybus::Endpoint
+    properties:
+      protocol: Opcua
+      connection: !ref opcuaConnection
+      topic: Building_1/RoboAssembler_5000/RoboArm_Manipulator/Timestamp
+      subscribe:
+        nodeId: 'ns=2;i=10'
+
+  RoboVisionSensorState:
+    type: Cybus::Endpoint
+    properties:
+      protocol: Opcua
+      connection: !ref opcuaConnection
+      topic: Building_1/RoboAssembler_5000/RoboVision_Sensor/State
+      subscribe:
+        nodeId: 'ns=2;i=7'
+
+  RoboVisionSensorTemperature:
+    type: Cybus::Endpoint
+    properties:
+      protocol: Opcua
+      connection: !ref opcuaConnection
+      topic: Building_1/RoboAssembler_5000/RoboVision_Sensor/Temperature
+      subscribe:
+        nodeId: 'ns=2;i=5'
+
+  RoboVisionSensorTimestamp:
+    type: Cybus::Endpoint
+    properties:
+      protocol: Opcua
+      connection: !ref opcuaConnection
+      topic: Building_1/RoboAssembler_5000/RoboVision_Sensor/Timestamp
+      subscribe:
+        nodeId: 'ns=2;i=6'
+
+  HydraulicPumpPressure:
+    type: Cybus::Endpoint
+    properties:
+      protocol: Opcua
+      connection: !ref opcuaConnection
+      topic: Building_2/TurboPress_8000/Hydraulic_Pump/Pressure
+      subscribe:
+        nodeId: 'ns=2;i=15'
+
+  HydraulicPumpTemperature:
+    type: Cybus::Endpoint
+    properties:
+      protocol: Opcua
+      connection: !ref opcuaConnection
+      topic: Building_2/TurboPress_8000/Hydraulic_Pump/Temperature
+      subscribe:
+        nodeId: 'ns=2;i=16'
+
+  HydraulicPumpTimestamp:
+    type: Cybus::Endpoint
+    properties:
+      protocol: Opcua
+      connection: !ref opcuaConnection
+      topic: Building_2/TurboPress_8000/Hydraulic_Pump/Timestamp
+      subscribe:
+        nodeId: 'ns=2;i=17'
+
+

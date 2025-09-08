@@ -1,0 +1,111 @@
+---
+version: '2.0'
+services:
+
+  dev01:
+    build: ./s7
+
+  dev02:
+    build: ./s7
+
+  dev03:
+    build: ./s7
+
+  dev04:
+    build: ./s7
+
+  dev05:
+    build: ./s7
+
+  dev06:
+    build: ./s7
+
+  dev07:
+    build: ./s7
+
+  dev08:
+    build: ./s7
+
+  dev09:
+    build: ./s7
+
+  dev10:
+    build: ./s7
+
+  dev11:
+    build: ./modbus
+
+  dev12:
+    build: ./modbus
+
+  dev13:
+    build: ./modbus
+
+  dev14:
+    build: ./modbus
+
+  dev15:
+    build: ./modbus
+
+  dev16:
+    build: ./modbus
+
+  dev17:
+    build: ./modbus
+
+  dev18:
+    build: ./modbus
+
+  dev19:
+    build: ./modbus
+
+  dev20:
+    build: ./modbus
+
+  dev21:
+    build: ./simulated-opcua-server
+    ports:
+      - 48480:4840
+
+  dev22:
+    build: ./simulated-opcua-server
+    ports:
+      - 48481:4840
+
+  dev23:
+    build: ./simulated-opcua-server
+    ports:
+      - 48482:4840
+
+  dev24:
+    build: ./simulated-opcua-server
+    ports:
+      - 48483:4840
+
+  dev25:
+    build: ./simulated-opcua-server
+    ports:
+      - 48484:4840
+
+  sap:
+    build: ./sap
+
+  mes:
+    hostname: mes
+    image: mariadb:10.7
+    restart: always
+    ports:
+      - 3306:3306
+    environment:
+      MARIADB_ROOT_PASSWORD: cybus
+      MARIADB_DATABASE: cybus
+      MARIADB_INITDB_SKIP_TZINFO: 1
+
+  mes-web:
+    build: ./mes-webinterface
+    restart: always
+
+networks:
+  default:
+    external:
+      name: connectware_cybus
